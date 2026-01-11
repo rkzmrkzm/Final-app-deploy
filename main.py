@@ -44,6 +44,10 @@ except Exception as e:
     logger.error(f"{ct.INITIALIZE_ERROR_MESSAGE}\n{e}")
     # エラーメッセージの画面表示
     st.error(utils.build_error_message(ct.INITIALIZE_ERROR_MESSAGE), icon=ct.ERROR_ICON)
+    # デバッグ用：詳細なエラー情報を表示
+    st.error(f"詳細エラー: {str(e)}")
+    import traceback
+    st.code(traceback.format_exc())
     # 後続の処理を中断
     st.stop()
 
