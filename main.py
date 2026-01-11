@@ -7,6 +7,8 @@
 ############################################################
 # 「.env」ファイルから環境変数を読み込むための関数
 from dotenv import load_dotenv
+# OSモジュール
+import os
 # ログ出力を行うためのモジュール
 import logging
 # streamlitアプリの表示を担当するモジュール
@@ -24,6 +26,16 @@ import constants as ct
 ############################################################
 # 2. 設定関連
 ############################################################
+# 環境変数の読み込み（ローカル環境用）
+load_dotenv()
+
+# Streamlit Cloudの場合はst.secretsから環境変数を設定
+try:
+    if "OPENAI_API_KEY" in st.secrets:
+        os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+except Exception:
+    pass
+
 # ブラウザタブの表示文言を設定
 st.set_page_config(
     page_title=ct.APP_NAME

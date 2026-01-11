@@ -28,8 +28,18 @@ import constants as ct
 load_dotenv()
 
 # Streamlit Cloudの場合はst.secretsから環境変数を読み込む
-if "OPENAI_API_KEY" in st.secrets:
-    os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+try:
+    if "OPENAI_API_KEY" in st.secrets:
+        os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+except Exception:
+    # st.secretsが利用できない場合は環境変数から読み込み
+    pass
+
+# APIキーが設定されているか確認
+if not os.getenv("OPENAI_API_KEY"):
+    # 最後の手段：st.secretsから直接取得を試みる
+    try:
+        os.environ["OPENAI_API_KEY"] = st.secrets.get("OPENAI_API_KEY", "")
 
 
 ############################################################
