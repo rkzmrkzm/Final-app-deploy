@@ -41,6 +41,13 @@ st.set_page_config(
     page_title=ct.APP_NAME
 )
 
+# APIキーの確認（デバッグ用）
+api_key = os.getenv("OPENAI_API_KEY", "")
+if not api_key or api_key.strip() == "":
+    st.error("⚠️ OPENAI_API_KEYが設定されていません。Streamlit CloudのSecrets設定を確認してください。")
+    st.info("Settings → Secrets で以下の形式で設定してください：\n\n```\nOPENAI_API_KEY = \"sk-proj-...\"\n```")
+    st.stop()
+
 # ログ出力を行うためのロガーの設定
 logger = logging.getLogger(ct.LOGGER_NAME)
 
