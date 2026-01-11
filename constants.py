@@ -22,6 +22,7 @@ ANSWER_MODE_2 = "社内問い合わせ"
 CHAT_INPUT_HELPER_TEXT = "こちらからメッセージを送信してください。"
 DOC_SOURCE_ICON = ":material/description: "
 LINK_SOURCE_ICON = ":material/link: "
+INFO_ICON = ":material/info:"
 WARNING_ICON = ":material/warning:"
 ERROR_ICON = ":material/error:"
 SPINNER_TEXT = "回答生成中..."
@@ -44,13 +45,22 @@ TEMPERATURE = 0.5
 
 
 # ==========================================
+# RAG設定系
+# ==========================================
+CHUNK_SIZE = 500
+CHUNK_OVERLAP = 50
+RETRIEVER_TOP_K = 5
+
+
+# ==========================================
 # RAG参照用のデータソース系
 # ==========================================
 RAG_TOP_FOLDER_PATH = "./data"
 SUPPORTED_EXTENSIONS = {
     ".pdf": PyMuPDFLoader,
     ".docx": Docx2txtLoader,
-    ".csv": lambda path: CSVLoader(path, encoding="utf-8")
+    ".csv": lambda path: CSVLoader(path, encoding="utf-8"),
+    ".txt": TextLoader
 }
 WEB_URL_LOAD_TARGETS = [
     "https://generative-ai.web-camp.io/"

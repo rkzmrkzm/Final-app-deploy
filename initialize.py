@@ -123,8 +123,8 @@ def initialize_retriever():
     
     # チャンク分割用のオブジェクトを作成
     text_splitter = CharacterTextSplitter(
-        chunk_size=500,
-        chunk_overlap=50,
+        chunk_size=ct.CHUNK_SIZE,
+        chunk_overlap=ct.CHUNK_OVERLAP,
         separator="\n"
     )
 
@@ -135,7 +135,7 @@ def initialize_retriever():
     db = Chroma.from_documents(splitted_docs, embedding=embeddings)
 
     # ベクターストアを検索するRetrieverの作成
-    st.session_state.retriever = db.as_retriever(search_kwargs={"k": 3})
+    st.session_state.retriever = db.as_retriever(search_kwargs={"k": ct.RETRIEVER_TOP_K})
 
 
 def initialize_session_state():
@@ -214,10 +214,32 @@ def file_load(path, docs_all):
 
     # 想定していたファイル形式の場合のみ読み込む
     if file_extension in ct.SUPPORTED_EXTENSIONS:
-        # ファイルの拡張子に合ったdata loaderを使ってデータ読み込み
-        loader = ct.SUPPORTED_EXTENSIONS[file_extension](path)
-        docs = loader.load()
-        docs_all.extend(docs)
+        try:
+            # ファイルの拡張子に合ったdata loaderを使ってデータ読み込み
+            # .txtファイルの場合は複数のエンコーディングを試す
+            if file_extension == ".txt":
+                encodings = ["utf-8", "shift_jis", "cp932", "latin-1"]
+                docs = None
+                for encoding in encodings:
+                    try:
+                        loader = ct.SUPPORTED_EXTENSIONS[file_extension](path, encoding=encoding)
+                        docs = loader.load()
+                        break
+                    except:
+                        continue
+                if docs:
+                    docs_all.extend(docs)
+                else:
+                    logger = logging.getLogger(ct.LOGGER_NAME)
+                    logger.warning(f"Could not load {path} with any encoding")
+            else:
+                loader = ct.SUPPORTED_EXTENSIONS[file_extension](path)
+                docs = loader.load()
+                docs_all.extend(docs)
+        except Exception as e:
+            # ファイル読み込みに失敗した場合、ログに出力してスキップ
+            logger = logging.getLogger(ct.LOGGER_NAME)
+            logger.warning(f"Error loading {path}: {str(e)}")
 
 
 def adjust_string(s):
