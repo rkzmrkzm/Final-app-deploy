@@ -40,6 +40,8 @@ if not os.getenv("OPENAI_API_KEY"):
     # 最後の手段：st.secretsから直接取得を試みる
     try:
         os.environ["OPENAI_API_KEY"] = st.secrets.get("OPENAI_API_KEY", "")
+    except Exception:
+        pass
 
 
 ############################################################
