@@ -13,18 +13,29 @@ import os
 import logging
 # streamlitアプリの表示を担当するモジュール
 import streamlit as st
+# （自作）変数（定数）がまとめて定義・管理されているモジュール
+import constants as ct
+
+############################################################
+# 2. Streamlit設定（最初に実行する必要がある）
+############################################################
+st.set_page_config(
+    page_title=ct.APP_NAME
+)
+
+############################################################
+# 3. その他のライブラリ読み込み
+############################################################
 # （自作）画面表示以外の様々な関数が定義されているモジュール
 import utils
 # （自作）アプリ起動時に実行される初期化処理が記述された関数
 from initialize import initialize
 # （自作）画面表示系の関数が定義されているモジュール
 import components as cn
-# （自作）変数（定数）がまとめて定義・管理されているモジュール
-import constants as ct
 
 
 ############################################################
-# 2. 設定関連
+# 4. 環境変数設定（st.set_page_config()の後に実行）
 ############################################################
 # 環境変数の読み込み（ローカル環境用）
 load_dotenv()
@@ -35,11 +46,6 @@ try:
         os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 except Exception:
     pass
-
-# ブラウザタブの表示文言を設定
-st.set_page_config(
-    page_title=ct.APP_NAME
-)
 
 # APIキーの確認（デバッグ用）
 api_key = os.getenv("OPENAI_API_KEY", "")
