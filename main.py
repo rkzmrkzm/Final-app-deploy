@@ -41,23 +41,11 @@ import components as cn
 load_dotenv()
 
 # Streamlit Cloudの場合はst.secretsから環境変数を設定
-try:
-    st.write("DEBUG: Checking st.secrets...")
-    st.write(f"DEBUG: Available secrets: {list(st.secrets.keys())}")
-    if "OPENAI_API_KEY" in st.secrets:
-        api_key_from_secrets = st.secrets["OPENAI_API_KEY"]
-        st.write(f"DEBUG: Found OPENAI_API_KEY in secrets (length: {len(api_key_from_secrets)})")
-        os.environ["OPENAI_API_KEY"] = api_key_from_secrets
-    else:
-        st.write("DEBUG: OPENAI_API_KEY not found in st.secrets")
-except Exception as e:
-    st.write(f"DEBUG: Error accessing st.secrets: {str(e)}")
-    pass
+if "OPENAI_API_KEY" in st.secrets:
+    os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
 
-# APIキーの確認（デバッグ用）
+# APIキーの確認
 api_key = os.getenv("OPENAI_API_KEY", "")
-st.write(f"DEBUG: OPENAI_API_KEY from environment: {api_key[:20] if api_key else 'NOT SET'}...")
-
 if not api_key or api_key.strip() == "":
     st.error("⚠️ OPENAI_API_KEYが設定されていません。Streamlit CloudのSecrets設定を確認してください。")
     st.info("Settings → Secrets で以下の形式で設定してください：\n\n```\nOPENAI_API_KEY = \"sk-proj-...\"\n```")
